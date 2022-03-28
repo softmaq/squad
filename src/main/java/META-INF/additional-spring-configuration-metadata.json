@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "ff4j.spring.datasource.password",
+    "type": "java.lang.String",
+    "description": "A description for 'ff4j.spring.datasource.password'"
+  },
+  {
+    "name": "ff4j.spring.datasource.url",
+    "type": "java.lang.String",
+    "description": "A description for 'ff4j.spring.datasource.url'"
+  },
+  {
+    "name": "ff4j.spring.datasource.driver-class-name",
+    "type": "java.lang.String",
+    "description": "A description for 'ff4j.spring.datasource.driver-class-name'"
+  },
+  {
+    "name": "ff4j.spring.datasource.username",
+    "type": "java.lang.String",
+    "description": "A description for 'ff4j.spring.datasource.username'"
+  },
+  {
+    "name": "ff4j.spring.datasource.url",
+    "type": "java.lang.String",
+    "description": "A description for 'ff4j.spring.datasource.url'"
+  }
+]}
