@@ -4,6 +4,7 @@ import org.ff4j.FF4j;
 import org.ff4j.springjdbc.store.EventRepositorySpringJdbc;
 import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;
 import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class FF4JConfig {
     private String jdbcDriver;
 
     @Bean
+    @Qualifier("getFF4j")
     public FF4j getFF4j() { 
     	
         DriverManagerDataSource jdbc = new DriverManagerDataSource();

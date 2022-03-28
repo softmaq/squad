@@ -39,7 +39,7 @@ public class SquadControllerTest  {
 	@MockBean
 	private SquadService service;
 	
-	@MockBean(name="ff4j")
+	@MockBean(name="getFF4j")
 	private FF4j ff4j;
 	
 	private static final String url = "/squads";

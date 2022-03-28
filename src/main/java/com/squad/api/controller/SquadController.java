@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/squads")
 public class SquadController {
 
-	@Autowired 
-	@Qualifier("ff4j")
+	@Autowired(required=true)
+	@Qualifier("getFF4j")
 	public FF4j ff4j;
 	
 	@Autowired 
