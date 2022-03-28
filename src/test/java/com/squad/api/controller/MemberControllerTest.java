@@ -16,6 +16,7 @@ import java.util.List;
 import org.ff4j.FF4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,89 +26,105 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squad.api.domain.Member;
 import com.squad.api.domain.Squad;
-import com.squad.api.service.SquadService;
+import com.squad.api.dto.MemberDTO;
+import com.squad.api.dto.MemberSquadDTO;
+import com.squad.api.service.MemberService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(SquadController.class)
+@WebMvcTest(MemberController.class)
 @AutoConfigureMockMvc()
-public class SquadControllerTest  {
+public class MemberControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private SquadService service;
+	private MemberService service;
 	
 	@MockBean(name="ff4j")
 	private FF4j ff4j;
 	
-	private static final String url = "/squads";
+	private static final String url = "/members";
 	private static final String local = "http://localhost";	
-	private static final String locationSave = local+url;
-	private static final String locationSaveNew = local+url+"/new";
-	
+	private static final String locationSave = local+url;	
 	
 	@Test
-	public void saveSquad_WhenSquadValid_ExpectedCreated() throws Exception {	
-				
+	public void saveMember_WhenMemberValid_ExpectedCreated() throws Exception {	
+
 		Squad squad = Squad.builder().squadId(1).squadName("Squad Test").build();
+		MemberDTO memberDTO = MemberDTO.builder()
+				.memberId(1).memberName("Member Teste").squad(squad).jobTitle("DEV").build();
+		Member member = Member.builder().build();
+		BeanUtils.copyProperties(memberDTO, member);
 		
-		given(service.save(squad)).willReturn(squad);
+		given(service.save(member)).willReturn(member);
 		
-		mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(Obj2Json(squad)))
+		mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(Obj2Json(memberDTO)))
 		.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		.andExpect(header().string("location",containsString(locationSave)))
 		.andReturn();
 		
-		verify(service,times(1)).save(squad);
-	}
+		verify(service,times(1)).save(member);
+	}	
 
 	@Test
-	public void saveNewSquad_WhenSquadValid_ExpectedCreated() throws Exception {	
-				
+	public void getMemberById_WhenMemberIdValid_ExpectedOk() throws Exception {	
+
 		Squad squad = Squad.builder().squadId(1).squadName("Squad Test").build();
+		MemberDTO memberDTO = MemberDTO.builder()
+				.memberId(1).memberName("Member Teste").squad(squad).jobTitle("DEV").build();
+		Member member = Member.builder().build();
+		BeanUtils.copyProperties(memberDTO, member);
 		
-		given(service.save(squad)).willReturn(squad);
+		given(service.findById(1)).willReturn(member);
 		
-		mockMvc.perform(post(url+"/new").contentType(MediaType.APPLICATION_JSON).content(Obj2Json(squad)))
-		.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(header().string("location",containsString(locationSaveNew)))
-		.andReturn();
-		
-		verify(service,times(1)).save(squad);
-	}
-	
-	@Test
-	public void getById_WhenSquadIdValid_ExpectedOk() throws Exception {	
-				
-		Squad squad = Squad.builder().squadId(1).squadName("Squad Test").build();
-		
-		given(service.findById(squad.getSquadId())).willReturn(squad);
-		
-		mockMvc.perform(get(url+"/1").contentType(MediaType.APPLICATION_JSON).content(Obj2Json(squad)))
+		mockMvc.perform(get(url+"/1").contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		.andReturn();
 		
 		verify(service,times(1)).findById(1);
-	}
+	}	
+	
 
 	@Test
-	public void getAll_WhenSquadExist_ExpectedOk() throws Exception {	
-				
-		Squad squad = Squad.builder().squadId(1).squadName("Squad Test").build();
-		List<Squad> listSquad = new ArrayList<>();
-		listSquad.add(squad);
+	public void getMembersBySquadId_WhenSquadIdValid_ExpectedOk() throws Exception {	
+
+		MemberSquadDTO memberSquadDTO = MemberSquadDTO.builder()
+				.memberId(1).memberName("Member Teste").jobTitle("DEV").build();
+		List<MemberSquadDTO> members = new ArrayList<>();
+		members.add(memberSquadDTO);
 		
-		given(service.findAll()).willReturn(listSquad);
+		given(service.findMembersBySquadId(1)).willReturn(members);
+		
+		mockMvc.perform(get(url+"/squads/1").contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andReturn();
+		
+		verify(service,times(1)).findMembersBySquadId(1);
+	}	
+	
+
+	@Test
+	public void getAllMembers_WhenMembersExist_ExpectedOk() throws Exception {	
+
+		Squad squad = Squad.builder().squadId(1).squadName("Squad Test").build();
+		MemberDTO memberDTO = MemberDTO.builder()
+				.memberId(1).memberName("Member Teste").squad(squad).jobTitle("DEV").build();
+		Member member = Member.builder().build();
+		BeanUtils.copyProperties(memberDTO, member);
+		List<Member> members = new ArrayList<>();
+		members.add(member);
+		
+		given(service.findAll()).willReturn(members);
 		
 		mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		.andReturn();
 		
 		verify(service,times(1)).findAll();
-	}
-
+	}	
 	
 	
 	private String Obj2Json(final Object obj) {
@@ -116,5 +133,5 @@ public class SquadControllerTest  {
 		} catch ( Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
+	}	
 }

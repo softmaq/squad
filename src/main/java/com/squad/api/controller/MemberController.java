@@ -49,14 +49,14 @@ public class MemberController {
 	
 	
 	@GetMapping("/squads/{id}")
-	public ResponseEntity<List<MemberSquadDTO>> findMembersBySquadId(@PathVariable Integer id) {
+	public ResponseEntity<List<MemberSquadDTO>> getMembersBySquadId(@PathVariable Integer id) {
 		
 		return ResponseEntity.ok().body(service.findMembersBySquadId(id));
 		
 	}
 	
 	@GetMapping()
-	public List<Member> findAll() {
+	public List<Member> getAll() {
 		return service.findAll();
 	}
 
