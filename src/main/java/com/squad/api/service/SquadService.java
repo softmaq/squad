@@ -21,7 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SquadService {
 	
 	private static final String FEATURE_VALID_SQUAD_NAME_EXIST = "validSquadName";
-
+	private static final String MSG_LOG = "entity={} method={} mesage={}";
+	
 	@Autowired(required = true)
 	FF4j ff4j;
 
@@ -39,8 +40,9 @@ public class SquadService {
 	@Transactional
 	public Squad save(Squad squad) {
 
+		log.info("entity={} method={} event={} message={}", this.getClass().getName(), "save", "saving","salvando squad '" + squad.getSquadName() + "'");
         if (!ff4j.exist(FEATURE_VALID_SQUAD_NAME_EXIST)) {
-        	log.info("entity={} method={} mesage={}", "Squad","populateFeature", String.format("Criando feature %s = false",FEATURE_VALID_SQUAD_NAME_EXIST));
+        	log.info(MSG_LOG, String.format("Criando feature %s = false",FEATURE_VALID_SQUAD_NAME_EXIST));
             ff4j.createFeature(new Feature(FEATURE_VALID_SQUAD_NAME_EXIST, false));
         }
 		
@@ -53,7 +55,10 @@ public class SquadService {
 			}
 		}
 
-		return repository.save(squad);
+		Squad squadSaved = repository.save(squad);
+		log.info("entity={} method={} event={} message={}", this.getClass().getName(), "save", "saved",squadSaved);
+		
+		return squadSaved;
 	}
 
 }
